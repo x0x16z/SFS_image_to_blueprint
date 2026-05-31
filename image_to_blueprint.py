@@ -48,9 +48,6 @@ def pixel(x, y, black, scale, L):
 
 
 def makeFile(from_, to_, SCALE):
-    if from_ == "" or to_ == "":
-        showinfo("", "rename ur photo to 'image.png'")
-        return
     try:
         image = Image.open(from_)
         pixels = image.load()
@@ -64,7 +61,7 @@ def makeFile(from_, to_, SCALE):
                 rgb = pixels[x0, y0]  # Again!
 
                 if y0 == height - 1 or rgb != oldRGB:
-                    finalResult += pixel(x0, height - y0 - 1, oldRGB != 0, SCALE, count)
+                    finalResult += pixel(x0, height - y0 - 1, oldRGB[0] * oldRGB[1] * oldRGB[2] < 2097152, SCALE, count)
                     oldRGB = rgb
                     count = 0
 
@@ -83,4 +80,4 @@ if __name__ == '__main__':
     # 图像会缩放为原来的几分之一
     SCALE_ = 32
 
-    makeFile("image.png", "Blueprint.txt", 1/SCALE_)
+    makeFile("image.png", "Blueprint.txt", 1 / SCALE_)

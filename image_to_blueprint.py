@@ -20,11 +20,11 @@ bp_end = """
 
 
 def pixel(x, y, black, scale, L):
-    # 0.015625 - 1/64, 减轻了图案质量
+    # 0.015625 = 1/64, 减轻了图案质量
     return """{
       "n": "Fuel Tank",
       "p": {
-        "x": """ + str(x * scale) + """,
+        "x": """ + str((x + 32) * scale) + """,
         "y": """ + str(y * scale) + """
       },
       "o": {
@@ -61,15 +61,15 @@ def makeFile(from_, to_, SCALE):
         pixels = image.load()
         width, height = image.size
         finalResult = ""
-        oldRGB = pixels[0, 0]  # Oh no python没有强制类型, 编辑器觉得这里的类型是None就警告了
+        oldRGB = colorOf(pixels[0, 0])  # Oh no python没有强制类型, 编辑器觉得这里的类型是None就警告了
         count = 0
 
         for x0 in range(width):
             for y0 in range(height):
-                rgb = pixels[x0, y0]  # Again!
+                rgb = colorOf(pixels[x0, y0])  # Again!
 
                 if y0 == height - 1 or rgb != oldRGB:
-                    finalResult += pixel(x0, height - y0 - 1, colorOf(oldRGB), SCALE, count)
+                    finalResult += pixel(x0, height - y0 - 1, oldRGB, SCALE, count)
                     oldRGB = rgb
                     count = 0
 
@@ -87,5 +87,5 @@ def makeFile(from_, to_, SCALE):
 if __name__ == '__main__':
     # 图像会缩放为原来的几分之一
     SCALE_ = 10
-    
+
     makeFile("image.png", "Blueprint.txt", 1 / SCALE_)

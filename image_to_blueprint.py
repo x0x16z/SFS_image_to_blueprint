@@ -41,10 +41,18 @@ def pixel(x, y, black, scale, L):
         "fuel_percent": 0.0
       },
       "T": {
-        "color_tex": """ + ("\"Color_Black\"" if black else "\"_\"") + """,
+        "color_tex": """ + black + """,
         "shape_tex": "Flat"
       }
     },"""
+
+
+def colorOf(rgb):
+    if rgb[0] * rgb[1] * rgb[2] < 512000:
+        return "\"Color_Black\""
+    if rgb[0] * rgb[1] * rgb[2] < 4096000:
+        return "\"Color_Gray\""
+    return "\"_\""
 
 
 def makeFile(from_, to_, SCALE):
@@ -61,7 +69,7 @@ def makeFile(from_, to_, SCALE):
                 rgb = pixels[x0, y0]  # Again!
 
                 if y0 == height - 1 or rgb != oldRGB:
-                    finalResult += pixel(x0, height - y0 - 1, oldRGB[0] * oldRGB[1] * oldRGB[2] < 2097152, SCALE, count)
+                    finalResult += pixel(x0, height - y0 - 1, colorOf(oldRGB), SCALE, count)
                     oldRGB = rgb
                     count = 0
 
@@ -78,6 +86,6 @@ def makeFile(from_, to_, SCALE):
 
 if __name__ == '__main__':
     # 图像会缩放为原来的几分之一
-    SCALE_ = 32
-
+    SCALE_ = 10
+    
     makeFile("image.png", "Blueprint.txt", 1 / SCALE_)

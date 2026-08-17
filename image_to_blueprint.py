@@ -20,24 +20,23 @@ bp_end = """
 
 
 def pixel(x, y, rgb, scale, L):
-    # 0.015625 = 1/64, 减轻了图案质量
     return """{
       "n": "Fuel Tank",
       "p": {
-        "x": """ + str((x + 32) * scale) + """,
+        "x": """ + str(x * scale) + """,
         "y": """ + str(y * scale) + """
       },
       "o": {
-        "x": """ + str(scale * 64) + """,
-        "y": """ + str(scale * 64 * L) + """,
+        "x": """ + str(scale) + """,
+        "y": """ + str(scale * L) + """,
         "z": 0.0
       },
       "t": "-Infinity",
       "N": {
-        "width_original": 0.015625,
-        "width_a": 0.015625,
-        "width_b": 0.015625,
-        "height": 0.015625,
+        "width_original": 1,
+        "width_a": 1,
+        "width_b": 1,
+        "height": 1,
         "fuel_percent": 0.0
       },
       "T": {

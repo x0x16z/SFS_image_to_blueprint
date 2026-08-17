@@ -19,7 +19,7 @@ bp_end = """
 """
 
 
-def pixel(x, y, black, scale, L):
+def pixel(x, y, rgb, scale, L):
     # 0.015625 = 1/64, 减轻了图案质量
     return """{
       "n": "Fuel Tank",
@@ -41,32 +41,36 @@ def pixel(x, y, black, scale, L):
         "fuel_percent": 0.0
       },
       "T": {
-        "color_tex": """ + black + """,
+        "color_tex": "_",
         "shape_tex": "Flat"
+      },
+      "burns": {
+        "angle": 0,
+        "intensity": """ + str(factor(rgb[0], rgb[1], rgb[2])) + """,
+        "x": 0,
+        "top": "",
+        "bottom": ""
       }
     },"""
 
 
-def colorOf(rgb):
-    if rgb[0] * rgb[1] * rgb[2] < 512000:
-        return "\"Color_Black\""
-    if rgb[0] * rgb[1] * rgb[2] < 4096000:
-        return "\"Color_Gray\""
-    return "\"_\""
+def factor(r, g, b):
+    m = r * g * b
+    return 1.5 * (1.0 - m / 16581375)
 
 
 def makeFile(from_, to_, SCALE):
     try:
-        image = Image.open(from_)
+        image = Image.open(from_).convert('RGB')
         pixels = image.load()
         width, height = image.size
         finalResult = ""
-        oldRGB = colorOf(pixels[0, 0])  # Oh no python没有强制类型, 编辑器觉得这里的类型是None就警告了
+        oldRGB = pixels[0, 0]
         count = 0
 
         for x0 in range(width):
             for y0 in range(height):
-                rgb = colorOf(pixels[x0, y0])  # Again!
+                rgb = pixels[x0, y0]
 
                 if y0 == height - 1 or rgb != oldRGB:
                     finalResult += pixel(x0, height - y0 - 1, oldRGB, SCALE, count)
